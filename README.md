@@ -1,6 +1,6 @@
-Nama : Dian perdiansyah 
-Judul : si-laporan PKL 
-Deskripsi : Sistem laporan harian PKL
+## Nama : Dian Perdiansyah
+## Judul : SI-Laporan PKL
+## Deskripsi : Sistem Informasi Laporan PKL
 
 
 
