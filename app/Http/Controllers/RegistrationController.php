@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RegistrationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function index()
     {
-        return view('registration.index');
+        $students_active = $this->user->where('role', 'student')->where('status', 'active')->orderBy('created_at', 'asc')->get();
+        $students_inactive = $this->user->where('role', 'student')->where('status', 'inactive')->orderBy('updated_at', 'desc')->get();
+
+        return view('registration.index', compact('students_active', 'students_inactive'));
     }
 
     /**
@@ -49,9 +55,26 @@ class RegistrationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $student_id)
     {
-        //
+        $student = $this->user->find($student_id);
+
+        $msg = '';
+        $data = [];
+
+        foreach($request->all() as $key => $value) {
+            if($value) {
+                $data[$key] = $value;
+            }
+            if($key === 'status' && $value === 'active') {
+                $msg = 'Akun Berhasil diaktifkan';
+            }else if ( $key === 'status' && $value === 'inactive') {
+                $msg = 'Akun Berhasil dinonaktifkan';
+            }
+        }
+
+        $student->update($data);
+        return redirect()->back()->with('msg', $msg);
     }
 
     /**
