@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Nama : Dian Perdiansyah
 ## Judul : SI-Laporan PKL
 ## Deskripsi : Sistem Informasi Laporan PKL
@@ -70,3 +71,8 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+Nama : Dian perdiansyah
+judul : si-laporan PKL
+deskripsi : Sistem laporan harian untuk Siswa PKL
+>>>>>>> f571dc11d5074425516515e5f220a0ff85fe58c2

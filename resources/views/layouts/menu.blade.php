@@ -33,18 +33,18 @@
             <div data-i18n="Page 1">Pendaftaran</div>
         </a>
       </li>
-      <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'internship' ? 'active open' : '' }}">
+      <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-building-community"></i>
             <div data-i18n="Page 1">Tempat Magang</div>
         </a>
         <ul class="menu-sub ">
-            <li class="menu-item ">
+            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'internship' && explode('.', request()->route()->getName())[1] !== 'index_submission' ? 'active' : '' }}">
                 <a href="{{ route('internship.index') }}" class="menu-link">
                     <div data-i18n="Roles">Tempat Magang</div>
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'internship' && explode('.', request()->route()->getName())[1] == 'index_submission' ? 'active' : '' }}">
                 <a href="{{ route('internship.index_submission') }}" class="menu-link">
                     <div data-i18n="Permission">Pengajuan Magang</div>
                 </a>
@@ -63,7 +63,7 @@
             <div data-i18n="Page 1">Laporan</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'report' ? 'active' : '' }}">
+            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'report' ? 'active open' : '' }}">
                 <a href="{{ route('report.index') }}" class="menu-link">
                     <div data-i18n="Roles">Laporan Harian</div>
                 </a>
