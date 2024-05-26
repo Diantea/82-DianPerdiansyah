@@ -14,11 +14,22 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('nisn')->nullable();
             $table->string('email')->unique();
+            $table->enum('gender', ['Male', 'Female'])->default('Male');
+            $table->char('phone', 20);
+            $table->text('address');
+            $table->enum('role', ['admin', 'student', 'teacher']);
+            // $table->unsignedBigInteger('major_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->tinyInteger('class')->nullable();
+            $table->string('photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            // $table->foreign('major_id')->references('id')->on('majors')->onUpdate('cascade')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
