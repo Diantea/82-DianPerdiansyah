@@ -16,7 +16,7 @@
                                 <i class="ti ti-user ti-sm"></i>
                             </div>
                             <div class="card-info">
-                                <h5 class="mb-0">3</h5>
+                                <h5 class="mb-0">{{ $data['admins']->count() }}</h5>
                                 <small>Administrator</small>
                             </div>
                         </div>
@@ -28,19 +28,7 @@
                                 <i class="ti ti-user ti-sm"></i>
                             </div>
                             <div class="card-info">
-                                <h5 class="mb-0">1</h5>
-                                <small>Kaprodi</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-6">
-                        <div class="d-flex align-items-center">
-                            <div class="badge rounded-pill bg-label-primary me-3 p-2">
-                                <i class="ti ti-user ti-sm"></i>
-                            </div>
-                            <div class="card-info">
-                                <h5 class="mb-0">5</h5>
+                                <h5 class="mb-0">{{ $data['teachers']->count() }}</h5>
                                 <small>Guru Pembimbing</small>
                             </div>
                         </div>
@@ -52,7 +40,7 @@
                                 <i class="ti ti-user ti-sm"></i>
                             </div>
                             <div class="card-info">
-                                <h5 class="mb-0">8</h5>
+                                <h5 class="mb-0">{{ $data['students']->count()}}</h5>
                                 <small>Siswa</small>
                             </div>
                         </div>
@@ -65,11 +53,10 @@
         <div class="card">
             <div class="card-body d-flex justify-content-between">
                 <div>
-                    <a href="" class="btn btn-primary rounded-pill me-2">Semua</a>
-                    <a href="" class="btn btn-primary rounded-pill me-2">Administrator</a>
-                    <a href="" class="btn btn-primary rounded-pill me-2">Kaprodi</a>
-                    <a href="" class="btn btn-primary rounded-pill me-2">Guru Pembimbing</a>
-                    <a href="" class="btn btn-primary rounded-pill me-2">Siswa</a>
+                    <a href="{{ route('user.index') }}" class="btn btn{{ request()->get('role') ? '-outline' : '' }}-primary rounded-pill me-2">Semua</a>
+                    <a href="{{ route('user.index', ['role' => 'admins']) }}" class="btn btn{{ request()->get('role') !== 'admins' ? '-outline' : '' }}-primary rounded-pill me-2">Administrator</a>
+                    <a href="{{ route('user.index', ['role' => 'teachers']) }}" class="btn btn{{ request()->get('role') !== 'teachers' ? '-outline' : '' }}-primary rounded-pill me-2" >Guru Pembimbing</a>
+                    <a href="{{ route('user.index', ['role' => 'students']) }}" class="btn btn{{ request()->get('role') !== 'students' ? '-outline' : '' }}-primary rounded-pill me-2" >Siswa</a>
                 </div>
                 <div>
                     <a href="{{ route('user.create') }}" class="btn btn-primary">
@@ -89,30 +76,32 @@
                     </tr>
                     </thead>
                     <tbody>
+                        @foreach ($data[request()->get('role') ? request()->get('role') : 'all'] as $i => $user)
                         <tr>
-                            <td class="text-center">1</td>
-                            <td>dian</td>
-                            <td>dian@gmail.com</td>
-                            <td class="text-center text-capitalize">admin</td>
+                            <td class="text-center">{{ $i + 1 }}</td>
+                            <td class="text-center">{{ $user->name }}</td>
+                            <td class="text-center">{{ $user->email }}</td>
+                            <td class="text-center text-capitalize">{{ $user->role }}</td>
                             <td class="d-flex justify-content-center">
                                 <a href="" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password">
                                     <i class="ti ti-lock"></i>
                                 </a>
-                                <a href="" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+                                <a href="{{ route('user.show', $user) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
                                     <i class="ti ti-eye"></i>
                                 </a>
-                                <a href="" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                <a href="{{ route('user.edit', ['user' => $user, 'role' => $user->role]) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                     <i class="ti ti-edit"></i>
                                 </a>
-                                <a href="" class="btn btn-outline-secondary btn-post btn-icon rounded-pill" data-target="#form-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+                                <a href="" class="btn btn-outline-secondary btn-post btn-icon rounded-pill" data-target="#form-delete-{{$user->id}}" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
                                     <i class="ti ti-user-minus"></i>
                                 </a>
-                                <form action="" method="POST" id="form-delete">
+                                <form action="{{ route('user.destroy', $user) }}" method="POST" id="form-delete-{{$user->id}}">
                                     @csrf
                                     @method('DELETE')
                                 </form>
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
