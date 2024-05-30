@@ -83,7 +83,7 @@
                             <td class="text-center">{{ $user->email }}</td>
                             <td class="text-center text-capitalize">{{ $user->role }}</td>
                             <td class="d-flex justify-content-center">
-                                <a href="" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password">
+                                <a href="{{ route('user.reset-password', $user) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password">
                                     <i class="ti ti-lock"></i>
                                 </a>
                                 <a href="{{ route('user.show', $user) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">

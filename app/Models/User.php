@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\DailyReport;
 
 class User extends Authenticatable
 {
@@ -43,5 +44,19 @@ class User extends Authenticatable
 
     public function major() {
         return $this->belongsTo(Major::class);
+    }
+
+    public function daily_reports() {
+        return $this->hasMany(DailyReport::class, 'student_id', 'id');
+    }
+
+    // untuk mendapatkan URL lengkap dari foto profil pengguna
+    public function getPhotoUrlAttribute() {
+        if (!$this->photo) return false;
+        return asset('storage/'.$this->photo);
+    }
+
+    public function last_reports() {
+        return $this->hasMany(LastReport::class, 'student_id', 'id');
     }
 }

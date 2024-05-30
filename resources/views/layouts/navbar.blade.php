@@ -15,7 +15,13 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                      @if(auth()->user()->photo_url)
+                        <img src="{{ auth()->user()->photo_url }}" alt class="h-auto rounded-circle" />
+                      @else
+                        <div class="avatar">
+                          <span class="avatar-initial rounded-circle bg-info">{{ auth()->user()->initial }}</span>
+                        </div>
+                      @endif
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -24,12 +30,18 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                              @if(auth()->user()->photo_url)
+                                <img src="{{ auth()->user()->photo_url }}" alt class="h-auto rounded-circle" />
+                              @else
+                                <div class="avatar">
+                                  <span class="avatar-initial rounded-circle bg-info">{{ auth()->user()->initial }}</span>
+                                </div>
+                              @endif
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-semibold d-block">{{ auth()->user()->name }}</span>
+                            <small class="text-muted">{{ auth()->user()->role }}</small>
                           </div>
                         </div>
                       </a>
@@ -38,7 +50,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="pages-profile-user.html">
+                      <a class="dropdown-item" href="{{ route('profile') }}">
                         <i class="ti ti-user-check me-2 ti-sm"></i>
                         <span class="align-middle">My Profile</span>
                       </a>

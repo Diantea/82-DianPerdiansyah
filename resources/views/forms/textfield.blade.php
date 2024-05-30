@@ -16,6 +16,7 @@
             name="{{ $field }}"
             value="{{ $type !== 'password' ? old($field) ?? ($item ? $item[$field] : '') : '' }}"
             {!! isset($step) ? 'step="'. $step .'"' : '' !!}
+            {{ isset($is_disabled) ? 'disabled' : '' }}
         />
         @if(isset($addon_right))
             <span class="input-group-text">{{ $addon_right }}</span>

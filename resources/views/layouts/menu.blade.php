@@ -69,7 +69,7 @@
                 </a>
             </li>
             <li class="menu-item ">
-                <a href="{{ route('report.index') }}" class="menu-link">
+                <a href="{{ route('last-report.index') }}" class="menu-link">
                     <div data-i18n="Permission">Laporan Akhir</div>
                 </a>
             </li>

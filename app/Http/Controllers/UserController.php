@@ -56,7 +56,7 @@ class UserController extends Controller
         // validasi data yang diterima gagal
         if ($validation->fails()) return redirect()->to($previous . '?' . http_build_query(['role' => $request->role]))->withInput($request->all())->withErrors($validation->errors());
 
-        $params = $request->only(['role', 'name', 'nisn', 'major_id', 'semester', 'email', 'phone', 'gender', 'address']);
+        $params = $request->only(['role', 'name', 'nisn', 'major_id', 'class', 'email', 'phone', 'gender', 'address']);
         $params = collect($params)->merge(['status' => 'active', 'password' => bcrypt($request->password)])->all();
         $user = $this->user->create($params);
         return redirect()->to($previous . '?' . http_build_query(['role' => $user->role]))->with('msg', 'Pengguna berhasil dibuat');
@@ -65,25 +65,59 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $user = $this->user->find($id);
+        return view('user.show', compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $item = $this->user->find($id);
+        return view('user.form', compact('item'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $user = $this->user->find($id);
+        $previous = app('url')->previous();
+
+        // memvalidasi bahwa password dikonfirmasi dengan benar
+        $validation = \Validator::make($request->all(), [
+            'password' => 'confirmed',
+            'email' => 'email|unique:users,email,' . $user->id,
+        ]);
+
+        // validasi data yang diterima gagal
+        if ($validation->fails()) return redirect()->to($previous . '?' . http_build_query(['role' => $request->role]))->withInput($request->all())->withErrors($validation->errors());
+
+        $params = [];
+        foreach($request->all() as $key => $value) {
+            if($value && $key !== 'password_confirmation') {
+                if ($key === 'password') {
+                    $params[$key] = bcrypt($value);
+                } else if ($key === 'photo' && $request->file('photo')) {
+                    $path = 'users/';
+                    if ($request->file('photo')) {
+                        $filename = 'photo_' . uniqid() . '.' . $request->file('photo')->getClientOriginalExtension();
+                        $photo = $path . $filename;
+                        $request->file('photo')->storeAs('public/users', $filename);
+                        $params[$key] = $photo;
+                    }
+                } else {
+                    $params[$key] = $value;
+                }
+            }
+        }
+        $user->update($params);
+
+        return redirect()->to($previous . '?' . http_build_query(['role' => $user->role]))->with('msg', 'Pengguna berhasil diupdate');
     }
 
     /**
@@ -91,6 +125,19 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = $this->user->find($id);
+        $user->delete();
+
+        return redirect()->back()->with('msg', 'Pengguna berhasil dihapus');
+    }
+
+    public function reset_password($id) {
+        $item = $this->user->find($id);
+        return view('user.reset-password', compact('item'));
+    }
+
+    public function profile() {
+        $item = auth()->user();
+        return view('user.profile', compact('item'));
     }
 }
