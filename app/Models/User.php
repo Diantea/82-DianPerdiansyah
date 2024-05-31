@@ -63,6 +63,14 @@ class User extends Authenticatable
     public function internships() {
         return $this->hasMany(Internship::class, 'student_id', 'id');
     }
+
+    public function teacher() {
+        return $this->hasOne(TeacherStudent::class, 'student_id', 'id');
+    }
+
+    public function students() {
+        return $this->belongsToMany(User::class, 'teacher_students', 'teacher_id', 'student_id', 'id');
+    }
     
     public function getInitialAttribute() {
         return collect(explode(' ', $this->name))->map(function($name, $index) {

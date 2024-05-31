@@ -14,4 +14,12 @@ class Major extends Model
     public function users() {
         return $this->hasMany(User::class);
     }
+
+    public function getStudentsAttribute() {
+        return $this->users()->where('role', 'student')->where('status', 'active')->get();
+    }
+
+    public function getTeachersAttribute() {
+        return $this->users()->where('role', 'teacher')->get();
+    }
 }

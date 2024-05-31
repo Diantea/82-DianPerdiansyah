@@ -44,6 +44,7 @@ Route::middleware([WithAuth::class])->group(function(){
     Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class);
     
     // Guiding Teacher
+    Route::post('/teacher/{teacher}/add-student', [\App\Http\Controllers\TeacherController::class, 'add_student'])->name('teacher.add_student');
     Route::resource('/teacher', \App\Http\Controllers\TeacherController::class);
 
     // Daily Report

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -9,9 +11,16 @@ class TeacherController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     function __construct(User $user, Company $company) {
+        $this->user = $user;
+        $this->company = $company;
+    }
+    
     public function index()
     {
-        return view('teacher.index');
+        $teachers = $this->user->orderBy('name', 'asc')->where('role', 'teacher')->get();
+        return view('teacher.index', compact('teachers'));
     }
 
     /**
@@ -33,9 +42,11 @@ class TeacherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($teacher_id)
     {
-        //
+        $teacher = $this->user->find($teacher_id);
+
+        return view('teacher.show', compact('teacher'));
     }
 
     /**
@@ -60,5 +71,13 @@ class TeacherController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function add_student(Request $request, $teacher_id) {
+        $teacher = $this->user->find($teacher_id);
+
+        $teacher->students()->attach($request->student_id);
+
+        return redirect()->back()->with('msg', 'Mahasiswa berhasil ditambahkan');
     }
 }

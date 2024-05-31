@@ -1,4 +1,7 @@
 @extends('layouts.master')
+@section('title')
+    Guru Pembimbing
+@endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -16,7 +19,7 @@
                                 <i class="ti ti-building-community ti-sm"></i>
                             </div>
                             <div class="card-info">
-                                <h5 class="mb-0">3</h5>
+                                <h5 class="mb-0">{{ $teachers->count() }}</h5>
                                 <small>Guru Pembimbing</small>
                             </div>
                         </div>
@@ -36,27 +39,25 @@
                     <thead>
                     <tr>
                         <th class="text-center">No</th> 
-                        <th>Nama Guru</th>
-                        <th class="text-center">Tempat Magang</th>
-                        <th class="text-center">Jurusan</th>
+                        <th class="text-center">Nama Guru</th>
                         <th class="text-center">Jumlah Siswa</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td>Yayat</td>
-                            <td class="text-center">SMP 4</td>
-                            <td class="text-center">TKJ</td>
-                            <td class="text-center">2</td>
-                                
-                            <td class="d-flex justify-content-center">
-                                <a href="#" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
-                                    <i class="ti ti-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        @foreach($teachers as $i => $teacher)
+                            <tr>
+                                <td class="text-center">{{ $i + 1 }}</td>
+                                <td class="text-center">{{ $teacher->name }}</td>
+                                <td class="text-center">{{ $teacher->students->count() }}</td>
+                                    
+                                <td class="d-flex justify-content-center">
+                                    <a href="{{ route('teacher.show', $teacher) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
