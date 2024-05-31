@@ -12,22 +12,22 @@
                 </div>
                 <div class="card-body">
                     <div class="row gy-3">
-
+                        @foreach(\App\Models\Major::all() as $i => $major)
                             <div class="col-md-3 col-6">
-                                <div class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#category" style="cursor: pointer;">
+                                <div class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#major-{{ $i }}" style="cursor: pointer;">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
-                                        <i class="ti ti-user ti-sm"></i>
+                                        <i class="ti ti-{{ $major->icon }} ti-sm"></i>
                                     </div>
                                     <div class="card-info">
-                                        <h5 class="mb-0">12</h5>
-                                        <small>magang</small>
+                                        <h5 class="mb-0">{{ $major->students->count() }}</h5>
+                                        <small>{{ $major->name }}</small>
                                     </div>
                                 </div>
                             </div>
 
                             <div
                                 class="modal fade"
-                                id="category"
+                                id="major-{{ $i }}"
                                 aria-labelledby="modalToggleLabel"
                                 tabindex="-1"
                                 style="display: none"
@@ -36,7 +36,7 @@
                                 <div class="modal-dialog modal-dialog-centered modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalToggleLabel">Mahasiswa magang</h5>
+                                            <h5 class="modal-title" id="modalToggleLabel">Siswa {{ $major->name }}</h5>
                                             <button
                                                 type="button"
                                                 class="btn-close"
@@ -50,31 +50,36 @@
                                                 <tr>
                                                     <th class="text-center">No</th>
                                                     <th>Nama</th>
+                                                    <th class="text-center">NISN</th>
+                                                    <th class="text-center">Kelas</th>
                                                     <th class="text-center">Jurusan</th>
-                                                    <th class="text-center">Tempat</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                @foreach($major->students as $i => $student)
                                                     <tr>
-                                                        <td class="text-center">1</td>
-                                                        <td>Dian</td>
-                                                        <td class="text-center">tkj</td>
-                                                        <td class="text-center">SMP 4</td>
+                                                        <td class="text-center">{{ $i + 1 }}</td>
+                                                        <td>{{ $student->name }}</td>
+                                                        <td class="text-center">{{ $student->nisn }}</td>
+                                                        <td class="text-center">{{ $student->class }}</td>
+                                                        <td class="text-center"><i class="ti ti-{{ $student->major->icon }} me-1"></i> {{ $student->major->name }}</td>
                                                     </tr>
+                                                @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        @endforeach
 
                         <div class="col-md-3 col-6">
-                            <div class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#lecturer-modal" style="cursor: pointer">
+                            <div class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#teacher-modal" style="cursor: pointer">
                                 <div class="badge rounded-pill bg-label-info me-3 p-2">
                                     <i class="ti ti-user-check ti-sm"></i>
                                 </div>
                                 <div class="card-info">
-                                    <h5 class="mb-0">2</h5>
+                                    <h5 class="mb-0">{{ \App\Models\User::where('role', 'teacher')->count() }}</h5>
                                     <small>Guru Pembimbing</small>
                                 </div>
                             </div>
@@ -82,7 +87,7 @@
 
                             <div
                                 class="modal fade"
-                                id="lecturer-modal"
+                                id="teacher-modal"
                                 aria-labelledby="modalToggleLabel"
                                 tabindex="-1"
                                 style="display: none"
@@ -91,7 +96,7 @@
                                 <div class="modal-dialog modal-dialog-centered modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalToggleLabel">Dosen Pembimbing</h5>
+                                            <h5 class="modal-title" id="modalToggleLabel">Guru Pembimbing</h5>
                                             <button
                                                 type="button"
                                                 class="btn-close"
@@ -105,15 +110,19 @@
                                                 <tr>
                                                     <th class="text-center">No</th>
                                                     <th>Nama</th>
-                                                    <th>Tempat</th>
+                                                    <th>Email</th>
+                                                    <th>No. Telepon</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td class="text-center">1</td>
-                                                        <td>Jojo</td>
-                                                        <td>SMP 4</td>
-                                                    </tr>
+                                                    @foreach(\App\Models\User::where('role', 'teacher')->orderBy('name', 'asc')->get() as $i => $teacher)
+                                                        <tr>
+                                                            <td class="text-center">{{ $i + 1 }}</td>
+                                                            <td>{{ $teacher->name }}</td></td>
+                                                            <td>{{ $teacher->email }}</td>
+                                                            <td>{{ $teacher->phone }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -171,37 +180,42 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td>UTS</td>
-                                <td class="text-center">20/02/2024</td>
-                                <td class="d-flex justify-content-center">
-                                    <span data-bs-toggle="modal" data-bs-target="#information">
-                                        <button type="button" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
-                                            <i class="ti ti-eye"></i>
-                                        </button>
-                                    </span>
-                                        <a href="#" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                            <i class="ti ti-edit"></i>
-                                        </a>
-                                        <a href="" data-target="#btn-delete" class="btn-post btn btn-outline-secondary btn-icon rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
-                                            <i class="ti ti-trash"></i>
-                                        </a>
-                                        <form id="btn-delete" action="" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                </td>
-                            </tr>
+                            @foreach($informations as $i => $information)
+                                <tr>
+                                    <td class="text-center">{{ $i + 1 }}</td>
+                                    <td>{{ $information->title }}</td>
+                                    <td class="text-center">{{ $information->date_display }}</td>
+                                    <td class="d-flex justify-content-center">
+                                        <span data-bs-toggle="modal" data-bs-target="#information-{{ $i }}">
+                                            <button type="button" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+                                                <i class="ti ti-eye"></i>
+                                            </button>
+                                        </span>
+                                        @if(auth()->user()->role === 'admin')
+                                            <a href="{{ route('information.edit', $information) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                                <i class="ti ti-edit"></i>
+                                            </a>
+                                            <a href="" data-target="#btn-delete-{{ $information->id }}" class="btn-post btn btn-outline-secondary btn-icon rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+                                                <i class="ti ti-trash"></i>
+                                            </a>
+                                            <form id="btn-delete-{{ $information->id }}" action="{{ route('information.destroy', $information) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <div
+        @foreach($informations as $i => $information)
+            <div
                 class="modal fade"
-                id="information"
+                id="information-{{ $i }}"
                 aria-labelledby="modalToggleLabel"
                 tabindex="-1"
                 style="display: none"
@@ -210,7 +224,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalToggleLabel">Judul</h5>
+                            <h5 class="modal-title" id="modalToggleLabel">{{ $information->title }}</h5>
                             <button
                                 type="button"
                                 class="btn-close"
@@ -219,14 +233,16 @@
                             ></button>
                         </div>
                         <div class="modal-body">
-                                <img src="#" alt="information" class="w-100 mb-3">
-                            <div class="text-muted mb-2"><small>20 Mei  2024</small></div>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci repellendus itaque, autem enim recusandae similique facilis nemo placeat. Quod cumque corrupti sit? Eligendi nisi facere ipsa itaque recusandae distinctio dolore.
+                            @if($information->photo)
+                                <img src="{{ $information->photo_url }}" alt="information" class="w-100 mb-3">
+                            @endif
+                            <div class="text-muted mb-2"><small>{{ $information->date_display }}</small></div>
+                            {{ $information->description }}
                         </div>
                     </div>
                 </div>
             </div>
-
+        @endforeach
     </div>
 @endsection
 

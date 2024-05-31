@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InformationRequest;
+use App\Models\Information;
 use Illuminate\Http\Request;
 
 class InformationController extends Controller
@@ -9,9 +11,13 @@ class InformationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    function __construct(Information $information) {
+        $this->information = $information;
+    }
     public function index()
     {
-        return view('dashboard');
+        $informations = Information::orderBy('date', 'desc')->get();
+        return view('dashboard', compact('informations'));
     }
 
     /**
@@ -19,15 +25,31 @@ class InformationController extends Controller
      */
     public function create()
     {
-        return view('information.form');
+        $item = null;
+        return view('information.form', compact('item'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InformationRequest $request)
     {
-        //
+        $path = 'information/';
+        $photo = null;
+        if ($request->file('photo')) {
+            $filename = 'photo_' . uniqid() . '.' . $request->file('photo')->getClientOriginalExtension();
+            $photo = $path . $filename;
+            $request->file('photo')->storeAs('public/information', $filename);
+        }
+
+        $this->information->create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'date' => $request->date,
+            'photo' => $photo,
+        ]);
+
+        return redirect()->back()->with('msg', 'Informasi berhasil dibuat');
     }
 
     /**
@@ -41,24 +63,37 @@ class InformationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $item = $this->information->find($id);
+        return view('information.form', compact('item'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(InformationRequest $request, $id)
     {
-        //
+        $information = $this->information->find($id);
+
+        $params = [];
+        foreach($request->all() as $key => $value) {
+            if($value) {
+                $params[$key] = $value;
+            }
+        }
+        $information->update($params);
+
+        return redirect()->back()->with('msg', 'Informasi berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy($id) {
+        $information = $this->information->find($id);
+        $information->delete();
+
+        return redirect()->back()->with('msg', 'Informasi berhasil dihapus');
     }
 }
