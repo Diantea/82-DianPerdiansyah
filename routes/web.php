@@ -30,9 +30,15 @@ Route::middleware([WithAuth::class])->group(function(){
     // Registration
     Route::resource('/registration', \App\Http\Controllers\RegistrationController::class);
     
+    //Company
+    Route::post('/company/request', [\App\Http\Controllers\CompanyController::class, 'request_company'])->name('company.request_company');
+    Route::post('/company/register', [\App\Http\Controllers\CompanyController::class, 'register_company'])->name('company.register_company');
+    Route::get('/company/submission', [\App\Http\Controllers\CompanyController::class, 'index_submission'])->name('company.index_submission');
+    Route::resource('/company', \App\Http\Controllers\CompanyController::class);
+
     // Internship
     Route::resource('/internship', \App\Http\Controllers\InternshipController::class);
-    Route::get('/internship/submission', [\App\Http\Controllers\InternshipController::class, 'index_submission'])->name('internship.index_submission');
+    // Route::get('/internship/submission', [\App\Http\Controllers\InternshipController::class, 'index_submission'])->name('internship.index_submission');
     
     // Schedule
     Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class);

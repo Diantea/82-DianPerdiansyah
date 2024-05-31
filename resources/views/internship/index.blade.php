@@ -24,14 +24,14 @@
                 </div>
             </div>
         </div>
-
+ 
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="card-title">
                     Tempat Magang
                 </h5>
                 <div>
-                    <a href="{{ route('internship.create') }}" class="btn btn-primary">
+                    <a href="{{ route('company.create') }}" class="btn btn-primary">
                         Tambah
                     </a>
                 </div>
@@ -44,35 +44,77 @@
                         <th>Nama Perusahaan</th>
                         <th class="text-center">Maksimal</th>
                         <th class="text-center">Diterima</th>
-                        <th class="text-center">Surat Pengantar</th>
-                        <th class="text-center">Kontrak Kerja</th>
+                        @if (auth()->user()->role === 'admin')
+                            <th class="text-center">Surat Pengantar</th>
+                            <th class="text-center">Kontrak Kerja</th>
+                        @endif
                         <th class="text-center">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
+                        @foreach($companies_active as $i => $company)
                         <tr>
-                            <td class="text-center">1</td>
-                            <td>SMP 4</td>
-                            <td class="text-center">10</td>
-                            <td class="text-center">2 </td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                                
+                            <td class="text-center">{{ $i +1 }}</td>
+                            <td>{{ $company->name }}</td>
+                            <td class="text-center">{{ $company->max }}</td>
+                            <td class="text-center">{{$company->internships()->where('status', 'accepted')->count()}}</td>
+                            @if(auth()->user()->role === 'admin')
+                                <td class="text-center">
+                                    @if($company->file_1)
+                                    <a href="{{ $company->file_1_url }}" download="Surat Pengantar_{{ $company->name }}" class="btn btn-label-secondary btn-icon rounded-pill ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Surat Pengantar">
+                                        <i class="ti ti-download"></i>
+                                    </a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($company->file_2)
+                                        <a href="{{ $company->file_2_url }}" download="Kontrak Kerja_{{ $company->name }}" class="btn btn-label-secondary btn-icon rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Kontrak Kerja">
+                                            <i class="ti ti-download"></i>
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            @endif
                             <td class="d-flex justify-content-center">
-                                <a href="#" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
-                                    <i class="ti ti-eye"></i>
-                                </a>
-                                <a href="#" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                    <i class="ti ti-edit"></i>
-                                </a>
-                                <a href="" data-target="#btn-delete" class="btn-post btn btn-outline-secondary btn-icon rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
-                                    <i class="ti ti-trash"></i>
-                                </a>
-                                    <form action="#" method="POST" id="form-register">
-                                        <input type="hidden" name="company_id" value="">
+                                @if(auth()->user()->role === 'student')
+                                    @if($company->internships()->where('status', 'accepted')->count() >= $company->max)
+                                    <div data-bs-toggle="tooltip" data-bs-placement="top" title="Sudah Full">
+                                        <button type="button" class="btn btn-outline-secondary btn-icon rounded-pill" disabled>
+                                            <i class="ti ti-arrow-bar-to-right"></i>
+                                        </button>
+                                    </div>
+                                    @else
+                                    <div data-bs-toggle="tooltip" data-bs-placement="top" title="{{ auth()->user()->on_internship ? 'Kamu telah mendaftar' : 'Daftar' }}">
+                                        <a href="" data-target="#form-register-{{$company->id}}" class="btn btn-outline-primary btn-icon rounded-pill btn-post {{ auth()->user()->on_internship ? 'disabled' : '' }}">
+                                            <i class="ti ti-arrow-bar-to-right"></i>
+                                        </a>
+                                    </div>
+                                    <form action="{{ route('company.register_company') }}" method="POST" id="form-register-{{$company->id}}">
+                                        @csrf
+                                        <input type="hidden" name="company_id" value="{{ $company->id }}">
                                     </form>
+                                    @endif
+                                @else
+                                    <a href="{{ route('company.show', $company) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{{ route('company.edit', $company) }}" class="btn btn-outline-secondary btn-icon rounded-pill me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                        <i class="ti ti-edit"></i>
+                                    </a>
+                                    <a href="" data-target="#btn-delete-{{ $company->id }}" class="btn-post btn btn-outline-secondary btn-icon rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+                                        <i class="ti ti-trash"></i>
+                                    </a>
+                                    <form id="btn-delete-{{ $company->id }}" action="{{ route('company.destroy', $company) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                @endif
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

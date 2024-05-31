@@ -1,4 +1,7 @@
 @extends('layouts.master')
+@section('title')
+    Tambah Tempat Magang
+@endsection
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -8,45 +11,38 @@
               <div class="card-body">
 
                   <h4 class="card-title d-flex align-items-center justify-content-between">
-                       Tempat Magang
+                    {{ $item ? 'Edit' : 'Tambah' }} Tempat Magang
                   </h4>
-                  <form action="" method="POST" enctype="multipart/form-data">
-                          <div class="form-group mb-2">
-                            <label class="form-label" for="judul">Nama Internship</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="judul"
-                              placeholder="Nama"
-                              required
-                            />
-                          </div>
 
-                          <div class="form-group mb-2">
-                            <label class="form-label" for="judul">Max DIterima</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="judul"
-                              placeholder="12"
-                              required
-                            />
-                          </div>
+                  @include('layouts.alert')
+                  <form action="{{ $item ? route('company.update', $item) : route('company.store')}}" method="POST" enctype="multipart/form-data">
 
+                    @csrf
+                      @if($item)
+                          @method('PUT')
                           <div class="form-group mb-2">
-                            <label class="form-label" for="description">Alamat</label>
-                            <textarea
-                              type="text"
-                              class="form-control"
-                              id="description"
-                              placeholder="Alamat"
-                              required rows="6"
-                            ></textarea>
+                            <label class="form-label" for="id">Tempat Magang ID</label>
+                            <input type="text" class="form-control" id="id" value="#{{ $item->id }}" disabled />
                           </div>
+                        @endif
+
+                        @include('forms.textfield', ['label' => 'Nama Tempat', 'field' => 'name', 'type' => 'text'])
+
+                        @include('forms.textarea', ['label' => 'Alamat', 'field' => 'address'])
+
+                        @include('forms.textfield', ['label' => 'Maksimal', 'field' => 'max', 'type' => 'number'])
+
+                        @include('forms.file', ['label' => 'Surat Pengantar', 'field' => 'file_1'])
+
+                        @include('forms.file', ['label' => 'Kontrak Kerja', 'field' => 'file_2'])
                           
                       <div class="mt-4">
-                              <button type="submit" class="btn btn-primary">Simpan</button>
-                          <a href="{{ route('internship.index') }}" type="submit" class="btn btn-label-primary ms-2"><i data-feather="back" class="avatar-icon"></i> Kembali</a>
+                        @if ($item)
+                          <button type="submit" class="btn btn-primary">Perbarui</button>
+                        @else
+                          <button type="submit" class="btn btn-primary">Simpan</button>
+                        @endif
+                          <a href="{{route('company.index')}}" type="submit" class="btn btn-label-primary ms-2"><i data-feather="back" class="avatar-icon"></i> Kembali</a>
                       </div>
 
                   </form>
@@ -56,4 +52,8 @@
       </div>
   </div>
 </div>
+@endsection
+
+@section('js')
+  <script src="{{ asset('assets/js/pages-auth.js') }}"></script>  
 @endsection

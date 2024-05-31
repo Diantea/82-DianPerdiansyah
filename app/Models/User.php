@@ -59,4 +59,18 @@ class User extends Authenticatable
     public function last_reports() {
         return $this->hasMany(LastReport::class, 'student_id', 'id');
     }
+
+    public function internships() {
+        return $this->hasMany(Internship::class, 'student_id', 'id');
+    }
+    
+    public function getInitialAttribute() {
+        return collect(explode(' ', $this->name))->map(function($name, $index) {
+            return $index < 2 ? $name[0] : '';
+        })->join('');
+    }
+
+    public function getOnInternshipAttribute() {
+        return $this->internships()->whereNotIn('status', ['rejected'])->first();
+    }
 }

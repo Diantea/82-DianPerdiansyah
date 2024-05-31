@@ -27,36 +27,46 @@
           <div data-i18n="Page 1">Dashboard</div>
         </a>
       </li>
-      <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'registration' ? 'active' : '' }}">
-        <a href="{{ route('registration.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-id"></i>
-            <div data-i18n="Page 1">Pendaftaran</div>
-        </a>
-      </li>
-      <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+      @if (in_array(auth()->user()->role, ['admin']))    
+        <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'registration' ? 'active' : '' }}">
+          <a href="{{ route('registration.index') }}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-id"></i>
+              <div data-i18n="Page 1">Pendaftaran</div>
+          </a>
+        </li>
+      @endif
+      
+      @if (auth()->user()->role === 'admin' || (auth()->user()->role === 'student'))    
+        <li class="menu-item ">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons ti ti-building-community"></i>
+              <div data-i18n="Page 1">Tempat Magang</div>
+          </a>
+          <ul class="menu-sub ">
+              <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'company' && explode('.', request()->route()->getName())[1] !== 'index_submission' ? 'active' : '' }}">
+                  <a href="{{ route('company.index') }}" class="menu-link">
+                      <div data-i18n="Roles">Tempat Magang</div>
+                  </a>
+              </li>
+              <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'company' && explode('.', request()->route()->getName())[1] == 'index_submission' ? 'active' : '' }}">
+                  <a href="{{ route('company.index_submission') }}" class="menu-link">
+                      <div data-i18n="Permission">Pengajuan Magang</div>
+                  </a>
+              </li>
+          </ul>
+        </li>
+      @endif
+
+      @if (in_array(auth()->user()->role, ['admin']))    
+        <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'teacher' ? 'active' : '' }}">
+          <a href="{{ route('teacher.index') }}" class="menu-link">
             <i class="menu-icon tf-icons ti ti-building-community"></i>
-            <div data-i18n="Page 1">Tempat Magang</div>
-        </a>
-        <ul class="menu-sub ">
-            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'internship' && explode('.', request()->route()->getName())[1] !== 'index_submission' ? 'active' : '' }}">
-                <a href="{{ route('internship.index') }}" class="menu-link">
-                    <div data-i18n="Roles">Tempat Magang</div>
-                </a>
-            </li>
-            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'internship' && explode('.', request()->route()->getName())[1] == 'index_submission' ? 'active' : '' }}">
-                <a href="{{ route('internship.index_submission') }}" class="menu-link">
-                    <div data-i18n="Permission">Pengajuan Magang</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-      <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'teacher' ? 'active' : '' }}">
-        <a href="{{ route('teacher.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-building-community"></i>
-          <div data-i18n="Page 1">Guru Pembimbing</div>
-        </a>
-      </li>
+            <div data-i18n="Page 1">Guru Pembimbing</div>
+          </a>
+        </li>
+      @endif
+
       <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'report' ? 'active' : '' }}">
         <a href="" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-clipboard-text"></i>
@@ -68,20 +78,24 @@
                     <div data-i18n="Roles">Laporan Harian</div>
                 </a>
             </li>
-            <li class="menu-item ">
+            <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'last-report' ? 'active' : '' }}">
                 <a href="{{ route('last-report.index') }}" class="menu-link">
                     <div data-i18n="Permission">Laporan Akhir</div>
                 </a>
             </li>
         </ul>
-    </li>
-      <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">Pengguna</span>
       </li>
-      <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'user' ? 'active open' : '' }}">
-        <a href="{{ route('user.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-users"></i>
-          <div data-i18n="Page 1">Pengguna</div>
-        </a>
+
+      @if (in_array(auth()->user()->role, ['admin']))    
+        <li class="menu-header small text-uppercase">
+          <span class="menu-header-text">Pengguna</span>
+        </li>
+        <li class="menu-item {{ explode('.', request()->route()->getName())[0] === 'user' ? 'active open' : '' }}">
+          <a href="{{ route('user.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons ti ti-users"></i>
+            <div data-i18n="Page 1">Pengguna</div>
+          </a>
+        </li>
+      @endif
     </ul>
   </aside>

@@ -49,7 +49,7 @@ class LastReportController extends Controller
     {
         $report = auth()->user()->last_reports()->create([
             'date' => Carbon::now(),
-        ]);
+        ]); 
 
         $path = 'last-reports/';
         foreach (range(1, 3) as $i) {

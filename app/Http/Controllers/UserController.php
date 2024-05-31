@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -89,7 +90,7 @@ class UserController extends Controller
         $previous = app('url')->previous();
 
         // memvalidasi bahwa password dikonfirmasi dengan benar
-        $validation = \Validator::make($request->all(), [
+        $validation = Validator::make($request->all(), [
             'password' => 'confirmed',
             'email' => 'email|unique:users,email,' . $user->id,
         ]);
